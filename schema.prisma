@@ -1,0 +1,33 @@
+datasource db {
+  provider = "sqlite"
+  // Wasp requires that the url is set to the DATABASE_URL environment variable.
+  url      = env("DATABASE_URL")
+}
+
+// Wasp requires the `prisma-client-js` generator to be present.
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+    id          Int          @id @default(autoincrement())
+    audioTracks AudioTrack[]
+}
+
+model AudioTrack {
+    id        Int      @id @default(autoincrement())
+    name      String
+    length    Int
+    effects   String
+    equalizer String
+    user      User     @relation(fields: [userId], references: [id])
+    userId    Int
+    samples   Sample[]
+}
+
+model Sample {
+    id           Int        @id @default(autoincrement())
+    filePath     String
+    audioTrack   AudioTrack @relation(fields: [audioTrackId], references: [id])
+    audioTrackId Int
+}
